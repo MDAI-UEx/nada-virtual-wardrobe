@@ -1,200 +1,260 @@
-# NADA
+# NADA — Virtual Wardrobe
 
----
-
-## LOGO  
 <p align="center">
-  <img src="src/main/resources/static/logo.png" alt="Logo NADA" width="200"/>
+  <img src="src/main/resources/static/logo.png" alt="NADA logo" width="200"/>
 </p>
 
----
+*Nothing to wear?*
 
-## Integrantes
-- **Francisco Montero Sánchez** — 07256309Q  
-  <img src="src/main/resources/static/francisco.jpg" alt="Foto Francisco" width="120"/>
+NADA is a web application for managing a personal digital wardrobe. Users can upload photos of their clothes, organize them by category and other attributes, create outfits, and share their combinations with others.
 
-- **Ana Montero Preciado** — 09213540Q  
-  <img src="src/main/resources/static/ana.jpg" alt="Foto Ana" width="120"/>
----
+## Technologies
 
-## Eslogan    
-*¿No tienes NADA que ponerte?* 
+- **Java 21 and Spring Boot 3.5.6** — application backend.
+- **Spring Web / Spring MVC** — web layer following the Model–View–Controller pattern.
+- **Thymeleaf** — server-rendered HTML templates.
+- **Spring Data JPA and Hibernate** — object-relational mapping and data persistence.
+- **MySQL 8.4** — database used in the Docker environment.
+- **HTML, CSS and JavaScript** — user interface and browser interactions.
+- **Maven** — dependency management and application builds.
+- **Docker and Docker Compose** — application packaging and local deployment.
+- **JUnit 5, Spring Boot Test and H2** — automated testing with an in-memory database.
 
----
+## Architecture
 
-## Resumen
+The application follows the **Model–View–Controller (MVC)** pattern and uses a layered backend architecture.
 
-**NADA** es una aplicación web que permite gestionar un **armario digital personal**.  
-Los usuarios pueden subir fotos de sus prendas, organizarlas por categorías y combinarlas para crear conjuntos personalizados de manera sencilla.
+- **Controllers** handle HTTP requests, coordinate application operations and return Thymeleaf views or response data.
+- **Views** use Thymeleaf templates, HTML, CSS and JavaScript to render the interface.
+- **Models** represent domain entities such as users, clothing items, outfits and posts.
+- **Services** implement application logic, separating it from request handling.
+- **Repositories** use Spring Data JPA to access the database, with Hibernate handling object-relational mapping.
+- **DTOs** define request and response structures for the chat and outfit recommendation features.
 
----
+The main backend flow is:
 
-## Descripción  
-NADA es una aplicación web diseñada para facilitar la gestión de tu armario digital personal. <br>
-El sistema permite a cada usuario crear una cuenta y asociar un armario virtual donde puede subir fotos de sus prendas, organizarlas por categorías y características como color o talla, y combinarlas para crear conjuntos personalizados.<br>
-El proceso es sencillo: sube una foto de tu prenda, elige la categoría (camiseta, pantalón, zapato, etc.), añade detalles como color y talla, y guarda la prenda en tu armario digital. Luego, selecciona varias prendas para crear un conjunto y guárdalo para futuras ocasiones.<br><br>
-Ejemplo: Camiseta azul, Pantalón blanco, Zapatos negros — Conjunto “Reunión” (puedes añadir notas o comentarios hasta 256 caracteres).
-
----
-
-## Funcionalidades, Requisitos, “Pliego de condiciones”  
-- El usuario debe poder **crear una cuenta** y poder **acceder** a ella con un usuario y contraseña.
-- El usuario debe poder **subir fotos de sus prendas** y almacenarlas en su armario virtual.
-- Cuando el usuario **suba una foto demasiado grande** debe poder recortarla en la propia aplicación.
-- El usuario debe poder **organizar las prendas** por:
-    - Tipo de prenda (Parte superior, parte inferior o calzado)
-    - Categorías (Dentro de la parte superior hay camisetas, sudaderas, chaquetas...)
-    - Color
-    - Marca
-    - Talla
-- El usuario puede **buscar prendas** introduciendo información en una barra de búsqueda.
-    - La búsqueda puede ser por **tipo, categoría, color, marca o talla**.
-    - Los resultados de la búsqueda se mostrarán **agrupados primero por tipo de prenda y luego por características**.
-- Una vez el usuario ha añadido prendas a su armario digital, pueden darse dos casos:
-    - Si el usuario selecciona una prenda: puede **ver sus detalles y editar la información**.
-    - El usuario puede **crear un conjunto personalizado** a partir de 3 prendas.
-- La aplicación web debe ser **usable desde PC y móvil** (diseño responsive y adaptable al dispositivo).
-- El usuario puede **añadir notas o comentarios** a cada conjunto creado (hasta **256 caracteres**).
-- El usuario debe poder **eliminar o modificar** prendas y conjuntos de su armario digital.
-- El usuario debe poder **ver los conjuntos guardados y las prendas disponibles** en su armario.
-- La **persistencia de datos** debe garantizar que **cada usuario tenga su propio armario digital único**.
-- Al **eliminar una prenda** se eliminarán los conjuntos que la referencien.
-- Al **eliminar un usuario** se eliminarán todas sus prendas y conjuntos asociados.
-
----
-
-## Funcionalidades opcionales, recomendables o futuribles
-- Recomendación automática de conjuntos mediante Inteligencia Artificial (hecho).
-- Posibilidad de publicar conjuntos y recibir likes (hecho).
-- Estadísticas de uso (qué prendas usas más, colores favoritos, etc.).
-- Sugerencias de compra relacionadas con las prendas del usuario.
-- Modo colaborativo (compartir armarios entre amigos o familiares).
-- Mostrar al usuario una **lista de conjuntos recomendados** generada aleatoriamente en base a las prendas más utilizadas o populares en su armario.
-    - Al actualizar la página, la lista también se actualiza, repitiendo el proceso anterior.
-- Posibilidad de **elegir el idioma** para la interfaz de usuario.
-- En el proceso de creación de conjuntos, permitir la **inclusión de mensajes publicitarios**, enlaces a tiendas de moda, imágenes del conjunto o del usuario, y ofertas relacionadas con las prendas seleccionadas.
-
----
-
-## Diagrama E-R
-<img src="src/main/resources/static/DiagramaER.PNG" alt="DiagramaER" width="600"/>
-
----
-
-## Ejecución
-
-Para ejecutar la aplicación es necesario tener instalado Docker y Docker Compose (ambos incluidos en Docker Desktop).
-
-### Primera ejecución (construir imagen e importar datos iniciales)
-
-1. Abre una terminal en la carpeta raíz del proyecto.
-2. Construye y levanta los contenedores en segundo plano:
-
-```bash
-  docker compose up -d --build
+```text
+HTTP Request → Controller → Service → Repository → Database
 ```
 
-Esto:
-- Construye la imagen de la aplicación usando el Dockerfile.
-- Levanta un contenedor de MySQL y otro de la aplicación.
-- Crea/actualiza el esquema de base de datos, **pero no importa aún los datos de ejemplo**.
+For server-rendered pages, controllers pass model data to Thymeleaf templates to generate the HTML response.
 
-3. Una vez MySQL esté levantado, importa manualmente los datos iniciales desde `src/main/resources/data.sql` dentro del contenedor de la base de datos:
+The application is deployed as a single Spring Boot application, with MySQL running in a separate Docker container.
+
+## Overview
+
+Each user has a personal wardrobe where they can store clothing items with photos and details such as category, color, brand and size.
+
+Users can combine three items into an outfit, save it for future occasions, and add notes of up to 256 characters.
+
+For example:
+
+> Blue T-shirt + white trousers + black shoes → “Meeting” outfit.
+
+The application also includes an outfit recommendation assistant and a social section where users can publish outfits and like other users' posts.
+
+## Features
+
+### Accounts and Personal Wardrobes
+
+- User registration and login.
+- A separate digital wardrobe for each user.
+- Management of clothing items and saved outfits.
+- Deleting a user also removes their associated clothing items and outfits.
+
+### Clothing Management
+
+- Upload clothing photos.
+- Crop oversized photos within the application.
+- Organize clothing by type, category, color, brand and size.
+- Search by type, category, color, brand or size.
+- View and edit clothing details.
+- Delete clothing items.
+
+Clothing types include tops, bottoms and footwear, with specific categories for each type.
+
+Search results are grouped by clothing type and then by their attributes.
+
+Deleting a clothing item also removes outfits that reference it.
+
+### Outfit Creation
+
+- Combine three clothing items into a personalized outfit.
+- Preview selected items while creating or editing an outfit.
+- Save, edit and delete outfits.
+- Add notes of up to 256 characters.
+- Browse previously saved outfits.
+
+### Social Features
+
+- Publish outfits as posts.
+- Browse outfits published by other users.
+- Like posts.
+- Access previously liked posts.
+
+### Outfit Assistant
+
+An integrated assistant suggests outfit combinations using the clothing items available in the user's wardrobe.
+
+### User Interface
+
+- Responsive layouts for desktop and mobile devices.
+- Password visibility toggles in login and registration forms.
+- Image upload controls and clothing previews.
+
+## Team
+
+- **Francisco Montero Sánchez**
+- **Ana Montero Preciado**
+
+## Entity–Relationship Diagram
+
+<img src="src/main/resources/static/DiagramaER.PNG" alt="NADA entity–relationship diagram" width="600"/>
+
+## Running Locally
+
+### Requirements
+
+Install **Docker** and **Docker Compose**. Both are included in Docker Desktop.
+
+### First Run
+
+1. Clone the repository and open a terminal in its root directory:
 
 ```bash
-  docker exec -i mysql_db mysql -u nada -pN4dA_Db_P4ss_2025 -h 127.0.0.1 --protocol=tcp --default-character-set=utf8mb4 nada < src/main/resources/data.sql
+git clone https://github.com/MDAI-UEx/nada-virtual-wardrobe.git
+cd nada-virtual-wardrobe
 ```
 
-Nota: Si se van a introducir datos iniciales, es importante que no se creen otros usuarios antes de la
-inserción, 
-
-Nota2: El único usuario con prendas con imagenes para hacer las pruebas es el usuario 6 -> fran fran123.
-
-La aplicación estará disponible en:
+2. Build and start the containers:
 
 ```bash
-  http://localhost:8080
+docker compose up -d --build
 ```
 
-### Ejecuciones posteriores
-Si la imagen ya fue construida anteriormente y los datos ya han sido importados, puedes iniciar la aplicación en segundo plano simplemente con:
+This command:
+
+- Builds the application image using the Dockerfile.
+- Starts the MySQL and application containers.
+- Creates or updates the database schema.
+
+Sample data must be imported separately.
+
+3. Once the application has started and created the schema, import the sample data from `src/main/resources/data.sql`.
+
+Run the following command from Bash or Windows Command Prompt:
 
 ```bash
-  docker compose up -d
+docker exec -i mysql_db mysql -u nada -pN4dA_Db_P4ss_2025 -h 127.0.0.1 --protocol=tcp --default-character-set=utf8mb4 nada < src/main/resources/data.sql
 ```
 
-### Detener contenedores
-Para detener los contenedores sin eliminarlos:
+Import the sample data **before registering additional users**, as the initial records depend on predefined identifiers.
+
+The sample account with clothing images is:
+
+- **Username:** `fran`
+- **Password:** `fran123`
+
+4. Open the application at **http://localhost:8080**.
+
+### Subsequent Runs
+
+Once the image has been built and the sample data has been imported:
 
 ```bash
-  docker compose down
+docker compose up -d
 ```
 
-### Detener y borrar datos
-Para detener los contenedores y eliminar también los volúmenes (incluidos los datos de MySQL):
+### Stop the Application
+
+Stop and remove the containers while keeping the database volume:
 
 ```bash
-  docker compose down -v
+docker compose down
 ```
 
-En este caso, al volver a levantar con `docker compose up -d --build` la base de datos estará vacía y será necesario volver a importar los datos con el comando:
+### Reset the Database
+
+Stop the containers and remove their volumes, including the stored MySQL data:
 
 ```bash
-  docker exec -i mysql_db mysql -u nada -pN4dA_Db_P4ss_2025 -h 127.0.0.1 --protocol=tcp --default-character-set=utf8mb4 nada < src/main/resources/data.sql
+docker compose down -v
 ```
 
-## Estructura del proyecto
-
-La aplicación utiliza diferentes configuraciones según el entorno de ejecución.
-
-### Entorno Docker (ejecución normal)
-
-- Se ejecuta mediante docker compose.
-- Utiliza una base de datos MySQL.
-- Los datos iniciales se pueden cargar manualmente desde `src/main/resources/data.sql` usando `docker exec`.
-
-- Archivos relevantes:
-    - Dockerfile → Construcción de la imagen de la aplicación.
-    - docker-compose.yml → Orquestación de contenedores.
-    - src/main/resources/data.sql → Datos iniciales para MySQL.
-
-### Entorno de Test (JUnit)
-
-- Los tests se ejecutan sobre H2 en memoria.
-- Utilizan el perfil test, definido en:
+After resetting the database, start the application again and repeat the sample data import:
 
 ```bash
-  src/test/resources/application-test.yml
+docker compose up -d --build
 ```
 
-- Cargan datos iniciales desde:
+## Project Structure
+
+```text
+.
+├── src/
+│   ├── main/
+│   │   ├── java/com/nada/nada/
+│   │   │   ├── controllers/       # Web controllers
+│   │   │   ├── data/
+│   │   │   │   ├── model/         # Entities and enums
+│   │   │   │   ├── repository/    # Persistence repositories
+│   │   │   │   └── services/      # Application logic
+│   │   │   └── dto/               # Data transfer objects
+│   │   └── resources/
+│   │       ├── static/            # Images, CSS and JavaScript
+│   │       ├── templates/         # Thymeleaf templates
+│   │       ├── application.yml    # Application configuration
+│   │       └── data.sql           # Sample data
+│   └── test/
+│       ├── java/                  # Automated tests
+│       └── resources/             # Test configuration
+├── Dockerfile
+├── docker-compose.yml
+└── pom.xml
+```
+
+## Environments and Testing
+
+### Docker Environment
+
+The standard execution environment uses:
+
+- Docker Compose to run the application and database.
+- MySQL for data persistence.
+- The `docker` Spring profile.
+- A manual import of `src/main/resources/data.sql` for sample data.
+
+| File | Purpose |
+| --- | --- |
+| `Dockerfile` | Builds the application image. |
+| `docker-compose.yml` | Configures the application and MySQL containers. |
+| `src/main/resources/data.sql` | Provides the sample dataset. |
+
+### Test Environment
+
+Automated tests use:
+
+- An in-memory H2 database.
+- The `test` Spring profile.
+- Configuration from `src/test/resources/application-test.yml`.
+- Initial data from `src/main/resources/data.sql`.
+- Hibernate schema generation with `ddl-auto=create-drop`.
+
+The test suite includes model, repository, service and requirements tests.
+
+To run the tests with Java 21 and Maven installed:
 
 ```bash
-  src/main/resources/data.sql
+mvn test
 ```
 
-- El esquema de la BD se genera dinámicamente mediante Hibernate (ddl-auto=create-drop).
+## Future Improvements
 
----
+Potential extensions include:
 
-## Modificaciones adicionales
-
-Durante las últimas 2 semanas del desarrollo del proyecto se han implementado las siguientes mejoras y funcionalidades adicionales:
-
-### Nueva entidad: Post
-- Se ha añadido una nueva entidad **Post** que permite a los usuarios **publicar sus conjuntos** en un apartado social de la aplicación.
-- Los usuarios pueden ver los conjuntos publicados por otros usuarios, dando **"me gusta"** a los que más les gusten.
-- Cada usuario guarda un registro de los **posts a los que ha dado like**, permitiendo acceder a ellos fácilmente.
-
-### Mejoras visuales y de usabilidad
-- **Icono de ojo en los campos de contraseña**: Se ha añadido el típico icono de ojo en los formularios de login y registro para mostrar/ocultar la contraseña, mejorando la experiencia de usuario.
-- **Botón de adjuntar imagen mejorado**: Se ha rediseñado el botón para subir imágenes de prendas, haciéndolo más intuitivo y visualmente atractivo.
-- **Más opciones de personalización**: Se han ampliado las opciones disponibles para categorizar las prendas:
-  - Más opciones de **colores**.
-  - Más opciones de **marcas**.
-  - Más opciones de **tallas**.
-- **Edición de conjuntos**: Ahora, al igual que con las prendas, los usuarios pueden **modificar los conjuntos** ya creados, facilitando la gestión y personalización de sus combinaciones.
-- **Vista previa de prendas al crear o modificar conjuntos**: Al crear o modificar un conjunto, se muestra una vista previa de la prenda seleccionada, permitiendo al usuario ver cómo es antes de añadirla al conjunto.
-
-### Bot de creación de conjuntos
-- Se ha integrado un **bot asistente** que ayuda a los usuarios a crear conjuntos de forma automática, sugiriendo combinaciones basadas en las prendas disponibles en su armario.
+- Wardrobe usage statistics, such as frequently used items and favorite colors.
+- Shopping suggestions based on the user's clothes.
+- Shared wardrobes for friends or family.
+- A refreshed list of outfit suggestions based on frequently used or popular items.
+- Multiple interface languages.
+- Optional links to fashion stores and promotions when creating outfits.
