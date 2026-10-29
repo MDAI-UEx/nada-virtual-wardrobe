@@ -1,125 +1,72 @@
+
 # NADA — Virtual Wardrobe
 
 <p align="center">
-  <img src="src/main/resources/static/logo.png" alt="NADA logo" width="200"/>
+  <img src="src/main/resources/static/logo.png" alt="NADA logo" width="200">
 </p>
 
 *Nothing to wear?*
 
-NADA is a web application for managing a personal digital wardrobe. Users can upload photos of their clothes, organize them by category and other attributes, create outfits, and share their combinations with others.
+NADA is a web application for managing a personal digital wardrobe. Users can upload and organize their clothing, create outfits, and share their combinations with others.
+
+Developed as a collaborative university project at the University of Extremadura.
+
+## Screenshots
+
+<p align="center">
+  <img src="docs/images/home.JPG" alt="NADA Home" width="700">
+</p>
+
+| Virtual Wardrobe | Outfit Management |
+|:---:|:---:|
+| <img src="docs/images/wardrobe.JPG" alt="Virtual Wardrobe" width="450"> | <img src="docs/images/outfits.JPG" alt="Outfit Management" width="450"> |
 
 ## Technologies
 
-- **Java 21 and Spring Boot 3.5.6** — application backend.
-- **Spring Web / Spring MVC** — web layer following the Model–View–Controller pattern.
-- **Thymeleaf** — server-rendered HTML templates.
-- **Spring Data JPA and Hibernate** — object-relational mapping and data persistence.
-- **MySQL 8.4** — database used in the Docker environment.
-- **HTML, CSS and JavaScript** — user interface and browser interactions.
-- **Maven** — dependency management and application builds.
-- **Docker and Docker Compose** — application packaging and local deployment.
-- **JUnit 5, Spring Boot Test and H2** — automated testing with an in-memory database.
-
-## Architecture
-
-The application follows the **Model–View–Controller (MVC)** pattern and uses a layered backend architecture.
-
-- **Controllers** handle HTTP requests, coordinate application operations and return Thymeleaf views or response data.
-- **Views** use Thymeleaf templates, HTML, CSS and JavaScript to render the interface.
-- **Models** represent domain entities such as users, clothing items, outfits and posts.
-- **Services** implement application logic, separating it from request handling.
-- **Repositories** use Spring Data JPA to access the database, with Hibernate handling object-relational mapping.
-- **DTOs** define request and response structures for the chat and outfit recommendation features.
-
-The main backend flow is:
-
-```text
-HTTP Request → Controller → Service → Repository → Database
-```
-
-For server-rendered pages, controllers pass model data to Thymeleaf templates to generate the HTML response.
-
-The application is deployed as a single Spring Boot application, with MySQL running in a separate Docker container.
-
-## Overview
-
-Each user has a personal wardrobe where they can store clothing items with photos and details such as category, color, brand and size.
-
-Users can combine three items into an outfit, save it for future occasions, and add notes of up to 256 characters.
-
-For example:
-
-> Blue T-shirt + white trousers + black shoes → “Meeting” outfit.
-
-The application also includes an outfit recommendation assistant and a social section where users can publish outfits and like other users' posts.
+- **Backend:** Java 21, Spring Boot 3.5.6, Spring MVC, Spring Data JPA, Hibernate
+- **Frontend:** Thymeleaf, HTML, CSS, JavaScript
+- **Database:** MySQL 8.4
+- **Tools:** Maven, Docker, Docker Compose
+- **Testing:** JUnit 5, Spring Boot Test, H2
 
 ## Features
 
-### Accounts and Personal Wardrobes
+- **User accounts:** Registration, login and personal wardrobes.
+- **Clothing management:** Upload images, organize items by type, category, brand, color and size, and search or filter clothing.
+- **Outfit creation:** Combine clothing items into outfits and save, edit or delete them.
+- **Social features:** Publish outfits, browse other users' posts and like their combinations.
+- **Outfit assistant:** Receive outfit suggestions based on clothing available in the user's wardrobe.
 
-- User registration and login.
-- A separate digital wardrobe for each user.
-- Management of clothing items and saved outfits.
-- Deleting a user also removes their associated clothing items and outfits.
+## Architecture
 
-### Clothing Management
+NADA follows the **Model–View–Controller (MVC)** pattern with a layered Spring Boot architecture:
 
-- Upload clothing photos.
-- Crop oversized photos within the application.
-- Organize clothing by type, category, color, brand and size.
-- Search by type, category, color, brand or size.
-- View and edit clothing details.
-- Delete clothing items.
+- **Controllers:** Handle HTTP requests and return Thymeleaf views.
+- **Services:** Implement business logic.
+- **Repositories:** Manage database access through Spring Data JPA.
+- **Models:** Represent users, clothing items, outfits and posts.
 
-Clothing types include tops, bottoms and footwear, with specific categories for each type.
+```text
+HTTP Request → Controller → Service → Repository → MySQL
+```
 
-Search results are grouped by clothing type and then by their attributes.
+The application runs in a Docker container alongside a separate MySQL container.
 
-Deleting a clothing item also removes outfits that reference it.
+### Database Design
 
-### Outfit Creation
-
-- Combine three clothing items into a personalized outfit.
-- Preview selected items while creating or editing an outfit.
-- Save, edit and delete outfits.
-- Add notes of up to 256 characters.
-- Browse previously saved outfits.
-
-### Social Features
-
-- Publish outfits as posts.
-- Browse outfits published by other users.
-- Like posts.
-- Access previously liked posts.
-
-### Outfit Assistant
-
-An integrated assistant suggests outfit combinations using the clothing items available in the user's wardrobe.
-
-### User Interface
-
-- Responsive layouts for desktop and mobile devices.
-- Password visibility toggles in login and registration forms.
-- Image upload controls and clothing previews.
-
-## Team
-
-- **Francisco Montero Sánchez**
-- **Ana Montero Preciado**
-
-## Entity–Relationship Diagram
-
-<img src="src/main/resources/static/DiagramaER.PNG" alt="NADA entity–relationship diagram" width="600"/>
+<p align="center">
+  <img src="src/main/resources/static/DiagramaER.PNG" alt="NADA Entity-Relationship Diagram" width="600">
+</p>
 
 ## Running Locally
 
 ### Requirements
 
-Install **Docker** and **Docker Compose**. Both are included in Docker Desktop.
+- Docker and Docker Compose (included in Docker Desktop)
 
-### First Run
+### Setup
 
-1. Clone the repository and open a terminal in its root directory:
+1. Clone the repository:
 
 ```bash
 git clone https://github.com/MDAI-UEx/nada-virtual-wardrobe.git
@@ -132,129 +79,53 @@ cd nada-virtual-wardrobe
 docker compose up -d --build
 ```
 
-This command:
-
-- Builds the application image using the Dockerfile.
-- Starts the MySQL and application containers.
-- Creates or updates the database schema.
-
-Sample data must be imported separately.
-
-3. Once the application has started and created the schema, import the sample data from `src/main/resources/data.sql`.
-
-Run the following command from Bash or Windows Command Prompt:
+3. Once the database schema has been created, import the sample data from `src/main/resources/data.sql`:
 
 ```bash
-docker exec -i mysql_db mysql -u nada -pN4dA_Db_P4ss_2025 -h 127.0.0.1 --protocol=tcp --default-character-set=utf8mb4 nada < src/main/resources/data.sql
+docker exec -i mysql_db mysql -u nada -p -h 127.0.0.1 --protocol=tcp --default-character-set=utf8mb4 nada < src/main/resources/data.sql
 ```
 
-Import the sample data **before registering additional users**, as the initial records depend on predefined identifiers.
+Enter the MySQL password configured for the local Docker environment when prompted.
 
-The sample account with clothing images is:
+**Note:** Import the sample data before registering additional users, as the initial records depend on predefined identifiers.
+
+The sample account is:
 
 - **Username:** `fran`
 - **Password:** `fran123`
 
 4. Open the application at **http://localhost:8080**.
 
-### Subsequent Runs
-
-Once the image has been built and the sample data has been imported:
+### Docker Commands
 
 ```bash
+# Start existing containers
 docker compose up -d
-```
 
-### Stop the Application
-
-Stop and remove the containers while keeping the database volume:
-
-```bash
+# Stop containers
 docker compose down
-```
 
-### Reset the Database
-
-Stop the containers and remove their volumes, including the stored MySQL data:
-
-```bash
+# Reset database and volumes
 docker compose down -v
 ```
 
-After resetting the database, start the application again and repeat the sample data import:
+Resetting the database removes stored data. Restart the containers and import the sample data again if needed.
 
-```bash
-docker compose up -d --build
-```
+## Testing
 
-## Project Structure
+Automated tests use **JUnit 5, Spring Boot Test and H2**, with a dedicated test profile.
 
-```text
-.
-├── src/
-│   ├── main/
-│   │   ├── java/com/nada/nada/
-│   │   │   ├── controllers/       # Web controllers
-│   │   │   ├── data/
-│   │   │   │   ├── model/         # Entities and enums
-│   │   │   │   ├── repository/    # Persistence repositories
-│   │   │   │   └── services/      # Application logic
-│   │   │   └── dto/               # Data transfer objects
-│   │   └── resources/
-│   │       ├── static/            # Images, CSS and JavaScript
-│   │       ├── templates/         # Thymeleaf templates
-│   │       ├── application.yml    # Application configuration
-│   │       └── data.sql           # Sample data
-│   └── test/
-│       ├── java/                  # Automated tests
-│       └── resources/             # Test configuration
-├── Dockerfile
-├── docker-compose.yml
-└── pom.xml
-```
+The test suite covers models, repositories, services and application requirements.
 
-## Environments and Testing
-
-### Docker Environment
-
-The standard execution environment uses:
-
-- Docker Compose to run the application and database.
-- MySQL for data persistence.
-- The `docker` Spring profile.
-- A manual import of `src/main/resources/data.sql` for sample data.
-
-| File | Purpose |
-| --- | --- |
-| `Dockerfile` | Builds the application image. |
-| `docker-compose.yml` | Configures the application and MySQL containers. |
-| `src/main/resources/data.sql` | Provides the sample dataset. |
-
-### Test Environment
-
-Automated tests use:
-
-- An in-memory H2 database.
-- The `test` Spring profile.
-- Configuration from `src/test/resources/application-test.yml`.
-- Initial data from `src/main/resources/data.sql`.
-- Hibernate schema generation with `ddl-auto=create-drop`.
-
-The test suite includes model, repository, service and requirements tests.
-
-To run the tests with Java 21 and Maven installed:
+Run the tests with Java 21 and Maven:
 
 ```bash
 mvn test
 ```
 
-## Future Improvements
+## Team
 
-Potential extensions include:
+Developed by:
 
-- Wardrobe usage statistics, such as frequently used items and favorite colors.
-- Shopping suggestions based on the user's clothes.
-- Shared wardrobes for friends or family.
-- A refreshed list of outfit suggestions based on frequently used or popular items.
-- Multiple interface languages.
-- Optional links to fashion stores and promotions when creating outfits.
+- **Francisco Montero Sánchez** — [GitHub](https://github.com/fmonteroi)
+- **Ana Montero Preciado** — [GitHub](https://github.com/amonterooq)
